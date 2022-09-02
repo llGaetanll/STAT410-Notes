@@ -1,0 +1,356 @@
+\documentclass[12pt,letterpaper]{article}
+
+% \usepackage[margin=0.9in, showframe]{geometry}
+\usepackage[
+    top=5mm,
+    bottom=5mm,
+    left=5mm,
+    right=5mm,
+    marginparwidth=0mm,
+    marginparsep=0mm,
+    headheight=15pt,
+    centering,
+    % showframe,
+    includefoot,
+    includehead
+    ]{geometry}
+
+
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{lipsum}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{xcolor}
+
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+
+% add more margin between multicols columns
+\setlength\columnsep{10pt} 
+
+\vspace{-\baselineskip}
+
+% ================== %
+% format of sections
+% ================== %
+\titleformat{\section}
+   {\normalfont\small\bfseries\MakeUppercase}{}{1em}{\underline}
+\titlespacing{\section}{-1pc}{*4}{*1.5}
+
+\titleformat{\subsection}
+   {\normalfont\normalsize\bfseries}{}{1em}{}
+\titlespacing{\subsection}{-0.7pc}{*4}{*1.5}
+
+\titleformat{\subsubsection}
+   {\small\bfseries\sc}{}{1em}{}
+\titlespacing{\subsection}{-0.5pc}{*4}{*1.5}
+
+
+
+% ================= %
+% Headers & Footers
+% ================= %
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\bf STAT410 Notes}
+\rhead{Gaetan Almela}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+
+
+% ================= %
+% Aliases
+% ================= %
+\def\cov{\text{Cov}}
+\def\var{\text{V}}
+\def\ev{\text{E}}
+\def\eps{\varepsilon{}}
+\def\Dom{\text{Dom}}
+
+
+
+% ================= %
+% Commands
+% ================= %
+\newcommand{\Z}{{\mathbb Z}}
+\newcommand{\Q}{{\mathbb Q}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\D}{{\mathbb D}}
+\newcommand{\N}{{\mathbb N}}
+
+\newcommand{\btw}[1]{
+    $\langle$ #1 $\rangle$
+}
+
+\newcommand{\powerset}{\raisebox{.15\baselineskip}{\Large\ensuremath{\wp}}}
+
+% \newcommand{\B}{\raisebox{.15\baselineskip}{\Large\ensuremath{\wb}}}
+
+% create a command to display examples in a box
+\newcommand{\ex}[1]{
+    \medskip \noindent
+    \fcolorbox{lightgray}{white}{
+        \parbox{0.8\linewidth}{
+            {\bf Example} \\
+
+            #1
+        }
+    } 
+}
+
+% create a command for TODOs
+\newcommand{\TODO}{\color{red}\textbf{TODO}\color{black}}
+
+
+
+\begin{document}
+    \footnotesize
+
+    \begin{multicols*}{2}
+        \btw{Zoom recordings and notes are available through elms}
+
+        \section{Probabilities}
+
+        Goal is to understand how to calculate probabilities.
+
+        \subsection{Experiments}
+
+        An experiment is {\it a task that has 2 attributes}:
+        \begin{enumerate}
+            \item It is repeatable
+            \item All outcomes are known and well defined.
+        \end{enumerate}
+
+        \ex {
+            Pick out colored balls from a bag, you need to know what the different
+            colors can be.
+
+            Once an experiment has been designed, you will have the {\bf sample
+            space $S$}: the set of all possible outcomes of the experiment.
+        }
+
+        \ex {
+            Experiment: Toss a coin once.
+
+            Sample Space: $\{H, T\}$. We assume that this is a two-sided coin.
+        }
+
+        \ex {
+            Toss that same coin 4 times.
+
+            Sample Space
+
+            \[
+                S = \begin{bmatrix}
+                    HHHH & HHHT & HHTH & HHTT \\
+
+                    HTHH & HTHT & HTTH & HTTT \\
+
+                    THHH & THHT & THTH & THTT \\
+
+                    TTHH & TTHT & TTTH & TTTT
+                \end{bmatrix}
+            \]
+
+            There are 16 outcomes in this sample space. $|S| = 16$. Note that
+            this space is 1 dimensional, I only formatted it as a matrix to save
+            space.
+        }
+
+        \ex {
+            Roll a 6-sided die once
+
+            \[
+                S = \begin{bmatrix} 
+                    1 \\
+                    2 \\
+                    \vdots \\
+                    5 \\
+                    6
+                \end{bmatrix}
+            \]
+
+            Roll a 6-sided die twice
+
+            \[
+                S = \begin{bmatrix} 
+                    (1, 1) & \dots  & (1, 6) \\
+                    \vdots & \ddots & \vdots \\
+                    (6, 1) & \dots  & (6, 6) 
+                \end{bmatrix}
+            \]
+        }
+
+        \subsection{Events}
+        An event is any subset $E$ of the sample space.
+
+        \ex {
+            \[
+                E = \begin{bmatrix} 
+                    (1, 1) \\
+                    (2, 2) \\
+                    \vdots \\
+                    (5, 5) \\
+                    (6, 6)
+                \end{bmatrix}
+            \]
+        }
+
+        \subsection{Probabilities of Events}
+
+        There are $\powerset(S) = 2^{|S|}$ different subsets $E$ of $S$. This
+        grows very quickly. In our case of rolling a die twice, the set of all
+        subsets is $\powerset(S) = 2^{36}$.
+
+        {\bf Note}: For a set $F$, $F^c = U - F$ is the complement of $F$
+        where $U$ is the universe.
+
+        \ex {
+            For a set $F = \{x \leq 10\}$, $F^c = \{ x > 10 \}$
+        }
+
+        \subsection{Set Theory}
+
+        Let $A$ and $B$ be sets. \\
+
+        {\bf Complement}
+
+        $A^c = \{ x \not\in A \}$ is the complement of $A$. \\
+
+        {\bf Subsets}
+
+        $A \subseteq B$ if and only if $x \in A \Rightarrow x \in B$ \\
+
+        {\bf Union}
+
+        $A \cup B = \{x | x \in A \text{ or } x \in B\}$ \\
+
+        {\bf Intersections}
+
+        $A \cap B = \{x | x \in A \text{ and } x \in B\}$ \\
+
+        \btw{Goal: Quantify the probability of an event.}
+
+        It is important to note that one should consider whether the events in
+        the experiment are dependent or independent.
+
+        \ex {
+            Suppose the experiment is to roll a die and weight it. Then the
+            sample space $S = \{ \text{weight of the die $\in \R$} \}$. This is
+            true regardless of the number shown on the die, since these two
+            values are {\it independent}.
+
+            Note that $\R$ is uncountably infinite
+        }
+
+        If the sample space $S$ is finite, and $|S| = N$, any subset of $S$ is
+        an event. There are $\powerset(S) = 2^N$ possible subsets.
+
+        \ex {
+            {\bf Toss a coin once.}
+
+            Then $S = \{H, T\}$ so $|S| = 2$, then $|\powerset(S)| = 2^2 = 4$.
+            \\
+
+            {\bf Toss a coin twice.}
+
+            Then $|S| = 4$, then $|\powerset(S)| = 2^4 = 16$.
+            \\
+
+            {\bf Roll a die once.}
+
+            Then $|S| = 6$, then $|\powerset(S)| = 2^6 = 64$.
+            \\
+
+            {\bf Roll a die twice.}
+
+            Then $|S| = 36$, then $|\powerset(S)| = 2^{36}$.
+            \\
+
+            {\bf Roll an $N$ sided die.}
+
+            Then $|S| = N$, then $|\powerset(S)| = 2^N$.
+            \\
+        }
+
+        {\bf Note} Event space is growing exponentially in the size of the
+        sample space
+
+        \section{$\sigma$ Algebras}
+
+        \btw {{\bf Goal} Cut down the event space based on interesting/important
+        events.}
+
+        We will define probabilities only for events we are interested in.
+
+        A collection of $B$ sets is called a sigma algebra if
+        \begin{itemize}
+            \item $\emptyset \in B$
+            \item If $A \in B$, then $A^c \in B$ ($B$ is closed under
+                complements)
+            \item If $A_1, A_2, A_3, ...$ is a countable collection of sets
+                in $B$, then $\bigcup_{i = 1} A_i \in B$.
+        \end{itemize}
+
+        \ex {
+            Toss the coin three times.
+
+            $\powerset(S)$ is the largest possible sigma algebra with size
+            $2^|S| = 2^8 = 256$.
+        }
+
+        \ex {
+            Toss the coin three times, is the second toss a $H$?
+
+            $|S| = 2^3 = 8$ but now we only care about 2 types of outcomes,
+            either the middle toss is $H$ or $T$. \\
+
+            Let $\{0\}$ be the set such that you toss a coin 3 times and second
+            toss is $H \rightarrow \{HHH, HHT, THT, THH\}$
+
+            Let $\{1\}$ be the set such that you toss a coin 3 times and second
+            toss is $T \rightarrow \{TTT, TTH, HTT, HTH\}$ \\
+
+            Let $B$ be the sigma algebra generated by $\{0\}$ and $\{1\}$, then
+
+            \TODO {Format better}
+            \begin{align*}
+                B&= \{ \emptyset, \{0, 1\}, \{0\}, \{1\}\} \\
+                 &= \{ \emptyset, S, \\
+                 &      \{HHH, HHT, THH, THT\}, \\
+                 &      \{TTT, TTH, HTT, HTH\} \\
+                 &  \}
+            \end{align*}
+
+            For step 2, we just substituted $\{0\}$ and $\{1\}$.
+
+            Note that the union of any two sets in $B$ is also in $B$. 
+        }
+
+        Note that the reason we don't just use $\powerset(S)$ all the time for
+        probability is because the powerset gets huge so fast, even for
+        computers. This is the problem that sigma algebras solve.
+
+        This is useful to define a probability function. \\
+
+        \subsection{Probability Function}
+        Given a pair $(S, B)$ where $S$ is the sample space and $B$ is the sigma
+        algebra. A {\bf probability function} $P: B \rightarrow \R$ for this
+        pair is a function on $B$ satisfying 3 axioms
+
+        \begin{itemize}
+            \item $P(\emptyset) = 0$.
+            \item $P(S) = 1$.
+            \item $P(A) \geq 0$ for all $A \in B$.
+            \item If $A_1, A_2, A_3, ...$ is a collection of pairwise disjoint
+                sets in $B$, $P(\bigunion_{i} A_i) = \sum_{i = 1}^{\infty}
+                P(A_i)$. Note that $S$ could be infinite, which means that since
+                $B \subseteq \powerset(S)$ $A_i$s could be infinite.
+        \end{itemize}
+
+    \end{multicols*}
+\end{document}
+
